@@ -18,3 +18,17 @@ function multiply(firstNumber, secondNumber) {
 function division(firstNumber, secondNumber) {
   return firstNumber / secondNumber;
 }
+
+// Solves mathematical operations and returns the result
+function operate(firstNumber, secondNumber, operator) {
+  switch (operator) {
+    case "+":
+      return add(firstNumber, secondNumber);
+    case "-":
+      return subtract(firstNumber, secondNumber);
+    case "×":
+      return multiply(firstNumber, secondNumber);
+    case "÷":
+      return division(firstNumber, secondNumber);
+  }
+}
