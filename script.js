@@ -36,6 +36,7 @@ function display() {
   const equalButton = document.querySelector(".equal");
   const clearButton = document.querySelector(".clear");
   const backspaceButton = document.querySelector(".backspace");
+  const pointButton = document.querySelector(".point");
   const calculatorOperation = document.querySelector(".calculator__operation");
   const calculatorResult = document.querySelector(".calculator__result");
 
@@ -71,6 +72,11 @@ function display() {
         operator = "";
       }
 
+      if (currentNumber[currentNumber.length - 1] === ".") {
+        currentNumber = currentNumber.slice(0, currentNumber.length - 1);
+        calculatorResult.textContent = currentNumber;
+      }
+
       // If the user enters a number, they can edit the calculation operator if needed
       if (operator === "") {
         previousNumber = currentNumber;
@@ -87,6 +93,10 @@ function display() {
 
   // Gets the answer and displays it
   equalButton.addEventListener("click", () => {
+    if (currentNumber[currentNumber.length - 1] === ".") {
+      currentNumber = currentNumber.slice(0, currentNumber.length - 1);
+    }
+
     // Completes the calculatorOperation part
     calculatorOperation.textContent += ` ${currentNumber} ${equalButton.textContent}`;
 
@@ -124,6 +134,23 @@ function display() {
       } else {
         calculatorResult.textContent = currentNumber;
       }
+    }
+  });
+
+  pointButton.addEventListener("click", () => {
+    if (!currentNumber.includes(pointButton.textContent)) {
+      if (finalAnswer) {
+        currentNumber = "";
+        calculatorResult.textContent = currentNumber;
+        calculatorOperation.textContent = "";
+      }
+
+      if (currentNumber === "") {
+        currentNumber = 0 + pointButton.textContent;
+      } else {
+        currentNumber += pointButton.textContent;
+      }
+      calculatorResult.textContent = currentNumber;
     }
   });
 }
