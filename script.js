@@ -34,6 +34,7 @@ function display() {
   const numberButtons = document.querySelectorAll(".number");
   const operatorButtons = document.querySelectorAll(".operator");
   const equalButton = document.querySelector(".equal");
+  const clearButton = document.querySelector(".clear");
   const calculatorOperation = document.querySelector(".calculator__operation");
   const calculatorResult = document.querySelector(".calculator__result");
 
@@ -96,6 +97,18 @@ function display() {
     calculatorResult.textContent = finalAnswer;
     answerDisplayed = true;
   });
+
+  // Resets all variables and clears the calculator screen
+  clearButton.addEventListener("click", () => {
+    currentNumber = "";
+    previousNumber = "";
+    operator = "";
+    finalAnswer = "";
+    answerDisplayed = false;
+    calculatorOperation.textContent = "";
+    calculatorResult.textContent = 0;
+  });
+
 }
 
 display();
