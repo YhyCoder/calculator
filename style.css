@@ -43,6 +43,7 @@ button {
 }
 
 .calculator__operation {
+  height: 20px;
   font-size: 1.1rem;
   font-weight: 500;
   color: hsl(4, 50%, 73%);
