@@ -35,6 +35,7 @@ function display() {
   const operatorButtons = document.querySelectorAll(".operator");
   const equalButton = document.querySelector(".equal");
   const clearButton = document.querySelector(".clear");
+  const backspaceButton = document.querySelector(".backspace");
   const calculatorOperation = document.querySelector(".calculator__operation");
   const calculatorResult = document.querySelector(".calculator__result");
 
@@ -109,6 +110,22 @@ function display() {
     calculatorResult.textContent = 0;
   });
 
+  backspaceButton.addEventListener("click", () => {
+    // Remove calculatorOperation when we click backspace after getting the answer
+    if (calculatorResult.textContent == finalAnswer) {
+      calculatorOperation.textContent = "";
+    }
+
+    // User can undo their last input if they click the wrong number
+    if (calculatorResult.textContent == currentNumber) {
+      currentNumber = currentNumber.slice(0, currentNumber.length - 1);
+      if (currentNumber === "") {
+        calculatorResult.textContent = 0;
+      } else {
+        calculatorResult.textContent = currentNumber;
+      }
+    }
+  });
 }
 
 display();
