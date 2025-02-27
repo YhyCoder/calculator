@@ -37,6 +37,7 @@ function display() {
   const clearButton = document.querySelector(".clear");
   const backspaceButton = document.querySelector(".backspace");
   const pointButton = document.querySelector(".point");
+  const percentageButton = document.querySelector(".percentage");
   const calculatorOperation = document.querySelector(".calculator__operation");
   const calculatorResult = document.querySelector(".calculator__result");
 
@@ -60,6 +61,7 @@ function display() {
           (operatorButton) => (operatorButton.disabled = false)
         );
         pointButton.disabled = false;
+        percentageButton.disabled = false;
 
         // Returns the font of the calculationResult field to normal
         calculatorResult.classList.remove("calculator__result--small");
@@ -137,11 +139,12 @@ function display() {
         (operatorButton) => (operatorButton.disabled = false)
       );
       pointButton.disabled = false;
+      percentageButton.disabled = false;
       calculatorResult.classList.remove("calculator__result--small");
       calculatorOperation.textContent = "";
       calculatorResult.textContent = 0;
 
-    //If we divide a number by zero, it warns us and stops the calculation
+      //If we divide a number by zero, it warns us and stops the calculation
     } else if (operator === "÷" && currentNumber === "0") {
       calculatorResult.classList.add("calculator__result--small");
       calculatorResult.textContent = "Cannot devide by zero!";
@@ -150,6 +153,7 @@ function display() {
         (operatorButton) => (operatorButton.disabled = true)
       );
       pointButton.disabled = true;
+      percentageButton.disabled = true;
     } else {
       // Completes the calculatorOperation part
       calculatorOperation.textContent += ` ${currentNumber} ${equalButton.textContent}`;
@@ -197,6 +201,7 @@ function display() {
       (operatorButton) => (operatorButton.disabled = false)
     );
     pointButton.disabled = false;
+    percentageButton.disabled = false;
     calculatorResult.classList.remove("calculator__result--small");
     calculatorOperation.textContent = "";
     calculatorResult.textContent = 0;
@@ -217,6 +222,7 @@ function display() {
         (operatorButton) => (operatorButton.disabled = false)
       );
       pointButton.disabled = false;
+      percentageButton.disabled = false;
       calculatorResult.classList.remove("calculator__result--small");
       calculatorOperation.textContent = "";
       calculatorResult.textContent = 0;
@@ -249,6 +255,20 @@ function display() {
       } else {
         currentNumber += pointButton.textContent;
       }
+      calculatorResult.textContent = currentNumber;
+    }
+  });
+
+  percentageButton.addEventListener("click", () => {
+    // Getting the percentage of the calculation answer
+    if (answerDisplayed) {
+      currentNumber = finalAnswer;
+      calculatorOperation.textContent = "";
+    }
+
+    // Takes the percentage of the user input number
+    if (currentNumber !== "") {
+      currentNumber = currentNumber / 100;
       calculatorResult.textContent = currentNumber;
     }
   });
