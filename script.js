@@ -114,6 +114,11 @@ function display() {
       currentNumber = currentNumber.slice(0, currentNumber.length - 1);
     }
 
+    // Preventing incorrect calculations when numbers are not entered completely and equal button is clicked
+    if(currentNumber === "") {
+      currentNumber = calculatorResult.textContent;
+    }
+
     // Completes the calculatorOperation part
     calculatorOperation.textContent += ` ${currentNumber} ${equalButton.textContent}`;
 
@@ -180,7 +185,6 @@ function display() {
   pointButton.addEventListener("click", () => {
     // Prevent multiple decimal points in numbers
     if (!currentNumber.includes(pointButton.textContent)) {
-
       // Click on the decimal point after getting the answer
       if (finalAnswer) {
         currentNumber = "";
