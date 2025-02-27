@@ -38,6 +38,7 @@ function display() {
   const backspaceButton = document.querySelector(".backspace");
   const pointButton = document.querySelector(".point");
   const percentageButton = document.querySelector(".percentage");
+  const plusMinusButton = document.querySelector(".plus-minus");
   const calculatorOperation = document.querySelector(".calculator__operation");
   const calculatorResult = document.querySelector(".calculator__result");
 
@@ -62,6 +63,7 @@ function display() {
         );
         pointButton.disabled = false;
         percentageButton.disabled = false;
+        plusMinusButton.disabled = false;
 
         // Returns the font of the calculationResult field to normal
         calculatorResult.classList.remove("calculator__result--small");
@@ -140,6 +142,7 @@ function display() {
       );
       pointButton.disabled = false;
       percentageButton.disabled = false;
+      plusMinusButton.disabled = false;
       calculatorResult.classList.remove("calculator__result--small");
       calculatorOperation.textContent = "";
       calculatorResult.textContent = 0;
@@ -154,6 +157,7 @@ function display() {
       );
       pointButton.disabled = true;
       percentageButton.disabled = true;
+      plusMinusButton.disabled = true;
     } else {
       // Completes the calculatorOperation part
       calculatorOperation.textContent += ` ${currentNumber} ${equalButton.textContent}`;
@@ -202,6 +206,7 @@ function display() {
     );
     pointButton.disabled = false;
     percentageButton.disabled = false;
+    plusMinusButton.disabled = false;
     calculatorResult.classList.remove("calculator__result--small");
     calculatorOperation.textContent = "";
     calculatorResult.textContent = 0;
@@ -223,6 +228,7 @@ function display() {
       );
       pointButton.disabled = false;
       percentageButton.disabled = false;
+      plusMinusButton.disabled = false;
       calculatorResult.classList.remove("calculator__result--small");
       calculatorOperation.textContent = "";
       calculatorResult.textContent = 0;
@@ -268,7 +274,19 @@ function display() {
 
     // Takes the percentage of the user input number
     if (currentNumber !== "") {
-      currentNumber = currentNumber / 100;
+      currentNumber /= 100;
+      calculatorResult.textContent = currentNumber;
+    }
+  });
+
+  // Changes the sign of user input numbers and calculation results
+  plusMinusButton.addEventListener("click", () => {
+    if (answerDisplayed) {
+      finalAnswer *= -1;
+      calculatorOperation.textContent = "";
+      calculatorResult.textContent = finalAnswer;
+    } else if (Number(currentNumber)) {
+      currentNumber *= -1;
       calculatorResult.textContent = currentNumber;
     }
   });
