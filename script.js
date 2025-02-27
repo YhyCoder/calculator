@@ -65,6 +65,8 @@ function display() {
 
   operatorButtons.forEach((operatorButton) => {
     operatorButton.addEventListener("click", () => {
+      const previousOperator = operator;
+
       // Continuing the calculation on the answer
       if (answerDisplayed === true) {
         currentNumber = finalAnswer;
@@ -72,6 +74,7 @@ function display() {
         operator = "";
       }
 
+      // If we have a decimal point at the end of any number, it will remove it
       if (currentNumber[currentNumber.length - 1] === ".") {
         currentNumber = currentNumber.slice(0, currentNumber.length - 1);
         calculatorResult.textContent = currentNumber;
@@ -86,13 +89,27 @@ function display() {
       // The operator cannot be used at the beginning of the calculation
       if (previousNumber !== "") {
         operator = operatorButton.textContent;
-        calculatorOperation.textContent = `${previousNumber} ${operator}`;
       }
+
+      // The calculator only performs mathematical operations on one pair of numbers at a time
+      if (currentNumber) {
+        finalAnswer = calculate(
+          Number(previousNumber),
+          Number(currentNumber),
+          previousOperator
+        );
+        previousNumber = finalAnswer;
+        calculatorResult.textContent = finalAnswer;
+        currentNumber = "";
+      }
+
+      calculatorOperation.textContent = `${previousNumber} ${operator}`;
     });
   });
 
   // Gets the answer and displays it
   equalButton.addEventListener("click", () => {
+    // If we have a decimal point at the end of any number, it will remove it
     if (currentNumber[currentNumber.length - 1] === ".") {
       currentNumber = currentNumber.slice(0, currentNumber.length - 1);
     }
@@ -100,12 +117,35 @@ function display() {
     // Completes the calculatorOperation part
     calculatorOperation.textContent += ` ${currentNumber} ${equalButton.textContent}`;
 
-    finalAnswer = calculate(
-      Number(previousNumber),
-      Number(currentNumber),
-      operator
-    );
-    calculatorResult.textContent = finalAnswer;
+    // If we click on equals after reaching the answer,
+    // it will repeat the mathematical operation on the answer
+    if (finalAnswer && operator !== "") {
+      previousNumber = finalAnswer;
+
+      calculatorOperation.textContent = `${previousNumber} ${operator} ${currentNumber} ${equalButton.textContent}`;
+
+      finalAnswer = calculate(
+        Number(previousNumber),
+        Number(currentNumber),
+        operator
+      );
+    }
+
+    // If we click on the equal sign after writing the number, it will display the number itself
+    if (
+      operator === "" ||
+      !calculatorOperation.textContent.includes(operator)
+    ) {
+      calculatorResult.textContent = currentNumber;
+    } else {
+      finalAnswer = calculate(
+        Number(previousNumber),
+        Number(currentNumber),
+        operator
+      );
+      calculatorResult.textContent = finalAnswer;
+    }
+
     answerDisplayed = true;
   });
 
@@ -138,13 +178,17 @@ function display() {
   });
 
   pointButton.addEventListener("click", () => {
+    // Prevent multiple decimal points in numbers
     if (!currentNumber.includes(pointButton.textContent)) {
+
+      // Click on the decimal point after getting the answer
       if (finalAnswer) {
         currentNumber = "";
         calculatorResult.textContent = currentNumber;
         calculatorOperation.textContent = "";
       }
 
+      // Clicking on the decimal point when a number is entered or vice versa
       if (currentNumber === "") {
         currentNumber = 0 + pointButton.textContent;
       } else {
