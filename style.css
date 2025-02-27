@@ -54,6 +54,10 @@ button {
   font-weight: 700;
 }
 
+.calculator__result--small {
+  font-size: 1.9rem;
+}
+
 .calculator__buttons {
   display: flex;
   flex-wrap: wrap;
@@ -76,6 +80,12 @@ button {
 
 .button:hover {
   background-color: hsl(195, 34%, 28%);
+}
+
+.button:disabled {
+  cursor: default;
+  color: hsl(4, 30%, 53%);
+  background-color: #282828;
 }
 
 .button--red {

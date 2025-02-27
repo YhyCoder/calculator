@@ -54,6 +54,15 @@ function display() {
         currentNumber = "";
         answerDisplayed = false;
         operator = "";
+
+        // Enable buttons after division by zero
+        operatorButtons.forEach(
+          (operatorButton) => (operatorButton.disabled = false)
+        );
+        pointButton.disabled = false;
+
+        // Returns the font of the calculationResult field to normal
+        calculatorResult.classList.remove("calculator__result--small");
         calculatorOperation.textContent = "";
       }
 
@@ -115,42 +124,65 @@ function display() {
     }
 
     // Preventing incorrect calculations when numbers are not entered completely and equal button is clicked
-    if(currentNumber === "") {
+    if (currentNumber === "") {
       currentNumber = calculatorResult.textContent;
     }
 
-    // Completes the calculatorOperation part
-    calculatorOperation.textContent += ` ${currentNumber} ${equalButton.textContent}`;
-
-    // If we click on equals after reaching the answer,
-    // it will repeat the mathematical operation on the answer
-    if (finalAnswer && operator !== "") {
-      previousNumber = finalAnswer;
-
-      calculatorOperation.textContent = `${previousNumber} ${operator} ${currentNumber} ${equalButton.textContent}`;
-
-      finalAnswer = calculate(
-        Number(previousNumber),
-        Number(currentNumber),
-        operator
+    // When we click on equals, the calculator returns to normal mode from the result of division by zero
+    if (calculatorResult.textContent === "Cannot devide by zero!") {
+      currentNumber = "";
+      previousNumber = "";
+      operator = "";
+      operatorButtons.forEach(
+        (operatorButton) => (operatorButton.disabled = false)
       );
-    }
+      pointButton.disabled = false;
+      calculatorResult.classList.remove("calculator__result--small");
+      calculatorOperation.textContent = "";
+      calculatorResult.textContent = 0;
 
-    // If we click on the equal sign after writing the number, it will display the number itself
-    if (
-      operator === "" ||
-      !calculatorOperation.textContent.includes(operator)
-    ) {
-      calculatorResult.textContent = currentNumber;
+    //If we divide a number by zero, it warns us and stops the calculation
+    } else if (operator === "÷" && currentNumber === "0") {
+      calculatorResult.classList.add("calculator__result--small");
+      calculatorResult.textContent = "Cannot devide by zero!";
+
+      operatorButtons.forEach(
+        (operatorButton) => (operatorButton.disabled = true)
+      );
+      pointButton.disabled = true;
     } else {
-      finalAnswer = calculate(
-        Number(previousNumber),
-        Number(currentNumber),
-        operator
-      );
-      calculatorResult.textContent = finalAnswer;
-    }
+      // Completes the calculatorOperation part
+      calculatorOperation.textContent += ` ${currentNumber} ${equalButton.textContent}`;
 
+      // If we click on equals after reaching the answer,
+      // it will repeat the mathematical operation on the answer
+      if (finalAnswer && operator !== "") {
+        previousNumber = finalAnswer;
+
+        calculatorOperation.textContent = `${previousNumber} ${operator} ${currentNumber} ${equalButton.textContent}`;
+
+        finalAnswer = calculate(
+          Number(previousNumber),
+          Number(currentNumber),
+          operator
+        );
+      }
+
+      // If we click on the equal sign after writing the number, it will display the number itself
+      if (
+        operator === "" ||
+        !calculatorOperation.textContent.includes(operator)
+      ) {
+        calculatorResult.textContent = currentNumber;
+      } else {
+        finalAnswer = calculate(
+          Number(previousNumber),
+          Number(currentNumber),
+          operator
+        );
+        calculatorResult.textContent = finalAnswer;
+      }
+    }
     answerDisplayed = true;
   });
 
@@ -161,6 +193,11 @@ function display() {
     operator = "";
     finalAnswer = "";
     answerDisplayed = false;
+    operatorButtons.forEach(
+      (operatorButton) => (operatorButton.disabled = false)
+    );
+    pointButton.disabled = false;
+    calculatorResult.classList.remove("calculator__result--small");
     calculatorOperation.textContent = "";
     calculatorResult.textContent = 0;
   });
@@ -169,6 +206,20 @@ function display() {
     // Remove calculatorOperation when we click backspace after getting the answer
     if (calculatorResult.textContent == finalAnswer) {
       calculatorOperation.textContent = "";
+    }
+
+    // When we click on backspace, the calculator returns to normal mode from the result of division by zero
+    if (calculatorResult.textContent === "Cannot devide by zero!") {
+      currentNumber = "";
+      previousNumber = "";
+      operator = "";
+      operatorButtons.forEach(
+        (operatorButton) => (operatorButton.disabled = false)
+      );
+      pointButton.disabled = false;
+      calculatorResult.classList.remove("calculator__result--small");
+      calculatorOperation.textContent = "";
+      calculatorResult.textContent = 0;
     }
 
     // User can undo their last input if they click the wrong number
