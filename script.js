@@ -78,76 +78,78 @@ function removeLastCharacter(string) {
   return string.slice(0, string.length - 1);
 }
 
-numberButtons.forEach((numberButton) => {
-  numberButton.addEventListener("click", () => {
-    // After getting the answer, if the user clicks on any number, a new calculation will start
-    if (answerDisplayed) {
-      currentNumber = "";
-      answerDisplayed = false;
-      operator = "";
-      finalAnswer = "";
+function displayNumber(number) {
+  // After getting the answer, if the user clicks on any number, a new calculation will start
+  if (answerDisplayed) {
+    currentNumber = "";
+    answerDisplayed = false;
+    operator = "";
+    finalAnswer = "";
 
-      // Enable buttons after division by zero
-      disableButtons(false);
-      calculatorOperation.textContent = "";
+    // Enable buttons after division by zero
+    disableButtons(false);
+    calculatorOperation.textContent = "";
+  }
+
+  // The user cannot enter a number longer than 10 digits
+  if (currentNumber.length < 10) {
+    // Click on any number and it will display it in the calculator display area
+    currentNumber += number;
+    calculatorResult.textContent = currentNumber;
+  }
+}
+
+function displayOperator(operatorValue) {
+  const previousOperator = operator;
+
+  // Continuing the calculation on the answer
+  if (answerDisplayed) {
+    currentNumber = finalAnswer;
+    operator = "";
+    finalAnswer = "";
+    answerDisplayed = false;
+  }
+
+  // If we have a decimal point at the end of any number, it will remove it
+  if (currentNumber[currentNumber.length - 1] === ".") {
+    currentNumber = removeLastCharacter(currentNumber);
+    calculatorResult.textContent = currentNumber;
+  }
+
+  // If the user enters a number, they can edit the calculation operator if needed
+  if (operator === "") {
+    previousNumber = currentNumber;
+    currentNumber = "";
+  }
+
+  // The operator cannot be used at the beginning of the calculation
+  if (previousNumber !== "") {
+    operator = operatorValue;
+    // To display operators correctly when using the keyboard
+    if (operator === "/") {
+      operator = "÷";
+    } else if (operator === "*") {
+      operator = "×";
     }
+  }
 
-    // The user cannot enter a number longer than 10 digits
-    if (currentNumber.length < 10) {
-      // Click on any number and it will display it in the calculator display area
-      currentNumber += numberButton.textContent;
-      calculatorResult.textContent = currentNumber;
-    }
-  });
-});
+  // The calculator only performs mathematical operations on one pair of numbers at a time
+  if (currentNumber) {
+    finalAnswer = calculate(
+      Number(previousNumber),
+      Number(currentNumber),
+      previousOperator
+    );
+    previousNumber = finalAnswer;
+    calculatorResult.textContent = finalAnswer;
+    currentNumber = "";
+  }
 
-operatorButtons.forEach((operatorButton) => {
-  operatorButton.addEventListener("click", () => {
-    const previousOperator = operator;
-
-    // Continuing the calculation on the answer
-    if (answerDisplayed) {
-      currentNumber = finalAnswer;
-      operator = "";
-      finalAnswer = "";
-      answerDisplayed = false;
-    }
-
-    // If we have a decimal point at the end of any number, it will remove it
-    if (currentNumber[currentNumber.length - 1] === ".") {
-      currentNumber = removeLastCharacter(currentNumber);
-      calculatorResult.textContent = currentNumber;
-    }
-
-    // If the user enters a number, they can edit the calculation operator if needed
-    if (operator === "") {
-      previousNumber = currentNumber;
-      currentNumber = "";
-    }
-
-    // The operator cannot be used at the beginning of the calculation
-    if (previousNumber !== "") {
-      operator = operatorButton.textContent;
-    }
-
-    // The calculator only performs mathematical operations on one pair of numbers at a time
-    if (currentNumber) {
-      finalAnswer = calculate(
-        Number(previousNumber),
-        Number(currentNumber),
-        previousOperator
-      );
-      previousNumber = finalAnswer;
-      calculatorResult.textContent = finalAnswer;
-      currentNumber = "";
-    }
-
-    calculatorOperation.textContent = `${previousNumber} ${operator}`;
-  });
-});
+  calculatorOperation.textContent = `${previousNumber} ${operator}`;
+}
 
 // Gets the answer and displays it
-equalButton.addEventListener("click", () => {
+function displayEqual() {
   // If we have a decimal point at the end of any number, it will remove it
   if (currentNumber[currentNumber.length - 1] === ".") {
     currentNumber = removeLastCharacter(currentNumber);
@@ -162,22 +164,22 @@ equalButton.addEventListener("click", () => {
   if (calculatorResult.textContent === "Cannot devide by zero!") {
     resetCalculator();
     //If we divide a number by zero, it warns us and stops the calculation
-  } else if (operator === "÷" && currentNumber === "0") {
+  } else if ((operator === "÷" || operator === "/") && currentNumber === "0") {
     calculatorResult.textContent = "Cannot devide by zero!";
     disableButtons(true);
   } else {
     // Completes the calculatorOperation part
-    calculatorOperation.textContent += ` ${currentNumber} ${equalButton.textContent}`;
+    calculatorOperation.textContent += ` ${currentNumber} =`;
 
     // If we click on equals after reaching the answer,
     // it will repeat the mathematical operation on the answer
     if (
       (finalAnswer && operator !== "") ||
-      (finalAnswer === 0 && operator === "÷")
+      (finalAnswer === 0 && (operator === "÷" || operator === "/"))
     ) {
       previousNumber = finalAnswer;
 
-      calculatorOperation.textContent = `${previousNumber} ${operator} ${currentNumber} ${equalButton.textContent}`;
+      calculatorOperation.textContent = `${previousNumber} ${operator} ${currentNumber} =`;
     }
 
     // If we click on the equal sign after writing the number, it will display the number itself
@@ -199,16 +201,16 @@ equalButton.addEventListener("click", () => {
     }
   }
   answerDisplayed = true;
-});
+}
 
-// Resets all variables and clears the calculator screen
-clearButton.addEventListener("click", () => {
+// Resets all variables and clears the calculator display
+function clearTheDisplay() {
   finalAnswer = "";
   answerDisplayed = false;
   resetCalculator();
-});
+}
 
-backspaceButton.addEventListener("click", () => {
+function ClearTheLastDigit() {
   // Remove calculatorOperation when we click backspace after getting the answer
   if (answerDisplayed) {
     calculatorOperation.textContent = "";
@@ -228,9 +230,9 @@ backspaceButton.addEventListener("click", () => {
       calculatorResult.textContent = currentNumber;
     }
   }
-});
+}
 
-pointButton.addEventListener("click", () => {
+function displayDecimalPoint(decimalPoint) {
   // Click on the decimal point after getting the answer
   if (finalAnswer) {
     currentNumber = "";
@@ -242,18 +244,18 @@ pointButton.addEventListener("click", () => {
   }
 
   // Prevent multiple decimal points in numbers
-  if (!currentNumber.includes(pointButton.textContent)) {
+  if (!currentNumber.includes(decimalPoint)) {
     // Clicking on the decimal point when a number is entered or vice versa
     if (currentNumber === "") {
-      currentNumber = 0 + pointButton.textContent;
+      currentNumber = 0 + decimalPoint;
     } else {
-      currentNumber += pointButton.textContent;
+      currentNumber += decimalPoint;
     }
     calculatorResult.textContent = currentNumber;
   }
-});
+}
 
-percentageButton.addEventListener("click", () => {
+function displayPercentage() {
   // Getting the percentage of the calculation answer
   if (answerDisplayed) {
     currentNumber = finalAnswer;
@@ -267,10 +269,10 @@ percentageButton.addEventListener("click", () => {
     currentNumber = roundingDecimal(currentNumber);
     calculatorResult.textContent = currentNumber;
   }
-});
+}
 
 // Changes the sign of user input numbers and calculation results
-plusMinusButton.addEventListener("click", () => {
+function displayPlusMinus() {
   if (answerDisplayed) {
     finalAnswer *= -1;
     calculatorOperation.textContent = "";
@@ -279,4 +281,85 @@ plusMinusButton.addEventListener("click", () => {
     currentNumber *= -1;
     calculatorResult.textContent = currentNumber;
   }
+}
+
+// keyboard support
+document.addEventListener("keydown", (event) => {
+  const numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+  const operators = ["+", "-", "*", "/"];
+
+  numbers.forEach((number) => {
+    if (event.key === number) {
+      displayNumber(event.key);
+    }
+  });
+
+  operators.forEach((operatorValue) => {
+    if (event.key === operatorValue) {
+      displayOperator(event.key);
+    }
+  });
+
+  if (event.key === "=" || event.key === "Enter") {
+    event.preventDefault();
+    displayEqual();
+  }
+
+  if (event.key === "Escape" || event.key === "Delete") {
+    clearTheDisplay();
+  }
+
+  if (event.key === "Backspace") {
+    ClearTheLastDigit();
+  }
+
+  if (event.key === ".") {
+    displayDecimalPoint(event.key);
+  }
+
+  if (event.key === "%") {
+    displayPercentage();
+  }
+
+  if(event.key === "F9") {
+    displayPlusMinus();
+  }
+});
+
+// mouse click events
+numberButtons.forEach((numberButton) => {
+  numberButton.addEventListener("click", () => {
+    displayNumber(numberButton.textContent);
+  });
+});
+
+operatorButtons.forEach((operatorButton) => {
+  operatorButton.addEventListener("click", event => {
+    event.preventDefault();
+    displayOperator(operatorButton.textContent);
+  });
+});
+
+equalButton.addEventListener("click", () => {
+  displayEqual();
+});
+
+clearButton.addEventListener("click", () => {
+  clearTheDisplay();
+});
+
+backspaceButton.addEventListener("click", () => {
+  ClearTheLastDigit();
+});
+
+pointButton.addEventListener("click", () => {
+  displayDecimalPoint(pointButton.textContent);
+});
+
+percentageButton.addEventListener("click", () => {
+  displayPercentage();
+});
+
+plusMinusButton.addEventListener("click", () => {
+  displayPlusMinus();
 });
