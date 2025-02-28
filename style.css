@@ -21,7 +21,7 @@ button {
 }
 
 .calculator {
-  width: 400px;
+  width: 500px;
   padding: 1.5em;
   border-radius: 20px;
   background-color: hsl(213, 21%, 16%);
@@ -44,18 +44,14 @@ button {
 
 .calculator__operation {
   height: 20px;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 500;
   color: hsl(4, 50%, 73%);
 }
 
 .calculator__result {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
-}
-
-.calculator__result--small {
-  font-size: 1.9rem;
 }
 
 .calculator__buttons {
